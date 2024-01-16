@@ -161,3 +161,7 @@ sketch
 /BackEnd/db-tests/package.json
 /BackEnd/API/package-lock.json
 /BackEnd/API/package.json
+/FrontEnd/web-app/README.md
+/FrontEnd/web-app/package-lock.json
+/FrontEnd/web-app/package.json
+/FrontEnd/web-app/.gitignore

@@ -96,8 +96,11 @@ INSERT INTO Skladniki (id, nazwa) VALUES
 INSERT INTO PizzaSkladniki (skladnikId, pizzaId) VALUES
 (1, 1), -- składnikId 1 dla pizzy o id 1 (Margherita)
 (2, 1), -- składnikId 2 dla pizzy o id 1 (Margherita)
+(1, 2), -- składnikId 1 dla pizzy o id 2 (Pepperoni)
+(2, 2), -- składnikId 2 dla pizzy o id 2 (Pepperoni)
 (3, 2), -- składnikId 3 dla pizzy o id 2 (Pepperoni)
 (1, 3), -- składnikId 1 dla pizzy o id 3 (Vegetariana)
+(2, 3), -- składnikId 2 dla pizzy o id 3 (Vegetariana)
 (4, 3); -- składnikId 4 dla pizzy o id 3 (Vegetariana)
 
 -- Dla tabeli User

@@ -23,7 +23,7 @@ function MenuItem({ item, onAddToCart }) {
             name: item.nazwa_pizzy,
             quantity: quantity,
             unitPrice: item.cena,
-            total: quantity * item.cena,
+            total:Math.floor( quantity * item.cena),
         });
         setQuantity(1);
     };
@@ -87,7 +87,7 @@ function Menu({onAddToCart }) {
     const [items, setItems] = useState([]);
 
 //--------------------------//--------------------------//--------------------------//--------------------------//
-/**/    const itemsPerPage = 2; ///// !!! TU ZMIENIAĆ ILOŚĆ PIZZA NA 1 KARCIE                        /**/
+/**/    const itemsPerPage = 5; ///// !!! TU ZMIENIAĆ ILOŚĆ PIZZA NA 1 KARCIE                        /**/
 //--------------------------//--------------------------//--------------------------//--------------------------//
 
 

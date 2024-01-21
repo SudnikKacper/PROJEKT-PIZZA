@@ -13,7 +13,7 @@ const connection = mysql.createConnection({
     database: 'pizza' // schema
 });
 
-app.use(cors())
+app.use(cors('*'))
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -302,8 +302,8 @@ function displayDetailedView(callback) {
     const query = `
         SELECT Pizza.id AS pizzaId, Pizza.nazwa AS nazwa_pizzy, Pizza.cena, Pizza.img, Skladniki.id AS skladnikId, Skladniki.nazwa AS nazwa_skladnika
         FROM Pizza
-        JOIN PizzaSkladniki ON Pizza.id = PizzaSkladniki.pizzaId
-        JOIN Skladniki ON PizzaSkladniki.skladnikId = Skladniki.id
+                 JOIN PizzaSkladniki ON Pizza.id = PizzaSkladniki.pizzaId
+                 JOIN Skladniki ON PizzaSkladniki.skladnikId = Skladniki.id
     `;
 
     connection.query(query, (err, rows) => {
@@ -333,4 +333,3 @@ function displayDetailedView(callback) {
         }
     });
 }
-

@@ -12,7 +12,7 @@ function Cart({ cart, onRemoveFromCart, onPlaceOrder}) {
             <ul>
                 {cart.map((item, index) => (
                     <li key={index}>
-                        {item.name} - Quantity: {item.quantity} - Total: {item.total} PLN
+                        {item.name} - Quantity: {item.quantity} - Total: {parseFloat(item.total).toFixed(2)} PLN
                         <button onClick={() => onRemoveFromCart(item.pizzaId)}>❌</button>
                     </li>
                 ))}

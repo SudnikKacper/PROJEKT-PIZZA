@@ -60,38 +60,41 @@ function EditPizza() {
                 <button type="button" onClick={handleDeletePizza}>
                     Usuń pizze
                 </button>
-                <label>
+                <label htmlFor={"nazwa"}>
                     Nazwa:
                     <input
                         type="text"
                         name="nazwa"
                         value={pizza.nazwa}
                         onChange={handleInputChange}
+                        required
                     />
                 </label>
 
                 <br/>
-                <label>
+                <label htmlFor={"cena"}>
                     Cena:
                     <input
                         type="number"
                         name="cena"
                         value={pizza.cena}
                         onChange={handleInputChange}
+                        required
                     />
                 </label>
                 <br/>
-                <label>
+                <label htmlFor={"img"}>
                     Obrazek URL:
                     <input
                         type="text"
                         name="img"
                         value={pizza.img}
                         onChange={handleInputChange}
+                        required
                     />
                 </label>
                 <br/>
-                <label>
+                <label htmlFor={"dostepne"}>
                     Dostępność:
                     <input
                         type="checkbox"
@@ -103,6 +106,7 @@ function EditPizza() {
                                 dostepne: !prevPizza.dostepne,
                             }))
                         }
+                        required
                     />
                 </label>
                 <br/>

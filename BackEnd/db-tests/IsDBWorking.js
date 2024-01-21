@@ -10,13 +10,12 @@ connection.connect((err) => {
     }
     console.log('Connected to MySQL database.');
 
-    // Perform a simple query to check if the database is responsive
     connection.query('SELECT 1', (err, results) => {
         if (err) {
             console.error('Error pinging database:', err);
         } else {
             console.log('Database ping successful:', results);
         }
-        connection.end(); // Close the connection
+        connection.end();
     });
 });

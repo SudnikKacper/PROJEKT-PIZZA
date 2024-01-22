@@ -2,8 +2,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getPizzaAndIngredients, updatePizzaIngredients } from "../services/API";
+import useCookies from "./useCookies";
 
 const EditIngredients = () => {
+    const { getCookie } = useCookies('role');
+    const userRole = getCookie();
+    let role = [];
+    try {
+        role = userRole.split('+');
+    } catch (error) {
+        role = ["",0]
+    }
     const { id } = useParams();
     const [pizza, setPizza] = useState({
         nazwa: "",
@@ -46,6 +55,9 @@ const EditIngredients = () => {
 
     return (
         <div>
+        {
+            role[0] ==="Admin" &&
+        <div>
             <h2>Edit Ingredients</h2>
             <form>
                 <h3>{pizza.nazwa}</h3>
@@ -66,6 +78,13 @@ const EditIngredients = () => {
                     Save Changes
                 </button>
             </form>
+        </div>
+        }
+            {
+                role[0] !== "Admin" && <div>
+                    <p> Brak uprawnień</p>
+                </div>
+            }
         </div>
     );
 };

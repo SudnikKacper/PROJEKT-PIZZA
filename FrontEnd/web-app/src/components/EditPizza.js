@@ -3,8 +3,17 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {deletePizza, getPizzaById, updatePizza} from "../services/API";
+import useCookies from "./useCookies";
 
 function EditPizza() {
+    const { getCookie } = useCookies('role');
+    const userRole = getCookie();
+    let role = [];
+    try {
+        role = userRole.split('+');
+    } catch (error) {
+        role = ["",0]
+    }
 
     // nazwa, cena, img, dostepne
     const { id } = useParams();
@@ -55,6 +64,9 @@ function EditPizza() {
 
     return (
         <div>
+            {
+                role[0] ==="Admin" &&
+                <div>
             <h2>Edytuj pizze</h2>
             <form>
                 <button type="button" onClick={handleDeletePizza}>
@@ -113,6 +125,13 @@ function EditPizza() {
                 <button type="button" onClick={handleUpdatePizza}>Zapisz zmiany</button>
 
             </form>
+        </div>
+            }
+            {
+                role[0] !== "Admin" && <div>
+                    <p> Brak uprawnień</p>
+                </div>
+            }
         </div>
     );
 }

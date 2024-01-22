@@ -380,3 +380,127 @@ const isValidPizzaDataForAdd = (pizzaData) => {
 
     return true;
 };
+
+export const addOrder = async (orderData) => {
+    try {
+        const response = await fetch('http://localhost:9951/addOrder', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(orderData),
+        });
+
+        const data = await response.json();
+
+        // Tutaj możesz obsłużyć odpowiedź od serwera
+
+        return data;
+    } catch (error) {
+        console.error('Błąd podczas dodawania zamówienia:', error);
+        throw error;
+    }
+};
+
+
+export const getAllOrders = async () => {
+    try {
+        const response = await fetch('http://localhost:9951/getAll/Zamowienia', {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Error loading orders: ${response.status} - ${response.statusText}`
+            );
+        }
+
+        const data = await response.json();
+
+        // Validate the structure if needed
+        // if (!isValidOrderData(data)) {
+        //   throw new Error('Invalid order data structure.');
+        // }
+
+        return data;
+    } catch (error) {
+        console.error('Error loading orders:', error.message);
+        throw error;
+    }
+};
+
+export const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+        const response = await fetch(`http://localhost:9951/updateOrderStatus/${orderId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                newStatus,
+            }),
+            credentials: 'include', // Include credentials for cross-origin requests
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to update order status');
+        }
+
+        // Return the updated order data
+        const updatedOrderData = await response.json();
+        return updatedOrderData;
+    } catch (error) {
+        throw new Error(`Error updating order status: ${error.message}`);
+    }
+};
+
+export const deleteOrder = async (orderId) => {
+    try {
+        const response = await fetch(`http://localhost:9951/deleteOrder/${orderId}`, {
+            method: 'DELETE',
+            credentials: 'include',
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to delete order');
+        }
+
+        // Return a success message or any other relevant data
+        const result = await response.json();
+        return result;
+    } catch (error) {
+        throw new Error(`Error deleting order: ${error.message}`);
+    }
+};
+
+
+
+export const getAllUserOrders = async (userId) => {
+    try {
+        const response = await fetch(`http://localhost:9951/getAll/Zamowienia/${userId}`, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error(
+                `Error loading orders: ${response.status} - ${response.statusText}`
+            );
+        }
+
+        const data = await response.json();
+
+        // Validate the structure if needed
+        // if (!isValidOrderData(data)) {
+        //   throw new Error('Invalid order data structure.');
+        // }
+
+        return data;
+    } catch (error) {
+        console.error('Error loading orders:', error.message);
+        throw error;
+    }
+};

@@ -1,13 +1,14 @@
 // App.js
 
-//TODO Rejestracja
-//TODO Logowanie
-//TODO funkcjonalności w zależności od statusu użytkownika
-//TODO cookies tych zamówień bo jak f5 to deadage jest narazie
+
 //TODO engliszyfaj łebsajt
+//TODO poprawienie logowania/rejestracji jako strony zamiast w test
+//TODO poprawienie navbara
+
+
 
 import React, { useState } from "react";
-import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
 
 
 import "./App.css";
@@ -21,6 +22,10 @@ import EditPizza from "./components/EditPizza";
 import EditIngredients from "./components/EditIngredients";
 import AddPizza from "./components/AddPizza";
 import NavBar from "./components/NavBar";
+import TEST from "./components/TEST";
+import TEST2 from "./components/TEST2";
+import TEST3 from "./components/TEST3";
+import MojeZamowienie from "./components/MojeZamowienie";
 
 function App() {
 
@@ -50,15 +55,15 @@ function App() {
     };
 
 
+
     const handlePlaceOrder = async () => {
         try {
-            // TODO zrobić składanie zamówień xddd
-
-            console.log('Zamówienie zostało złożone, koszyk został wyczyszczony.');
+            console.log('Przechodzę do szczegółów zamówienia.');
         } catch (error) {
-            console.error('Błąd podczas składania zamówienia:', error);
+            console.error('Błąd przechodzenia:', error);
         }
     };
+
 
 
     return (
@@ -67,6 +72,34 @@ function App() {
             <div className={"App"}>
                 <Router>
                     <Routes>
+                        <Route
+                            path={'/TEST'}
+                            element={
+                                <React.Fragment>
+                                    <NavBar />
+                                    <TEST/>
+                                </React.Fragment>
+                            }
+                        />
+                        <Route
+                            path={'/TEST3'}
+                            element={
+                                <React.Fragment>
+                                    <NavBar />
+                                    <TEST3/>
+                                </React.Fragment>
+                            }
+                        />
+                        <Route
+                            path={'/TEST2'}
+                            element={
+                                <React.Fragment>
+                                    <NavBar />
+                                    <TEST2/>
+                                </React.Fragment>
+                            }
+                        />
+
                         <Route
                             path={'/na20'}
                             element={
@@ -129,7 +162,16 @@ function App() {
                                     <NavBar />
                                     <AddPizza />
                                 </React.Fragment>
-                        }
+                            }
+                        />
+                        <Route
+                            path="/myorder"
+                            element={
+                                <React.Fragment>
+                                    <NavBar />
+                                    <MojeZamowienie />
+                                </React.Fragment>
+                            }
                         />
                     </Routes>
                 </Router>

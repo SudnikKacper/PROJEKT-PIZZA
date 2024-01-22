@@ -11,30 +11,30 @@ CREATE TABLE Pizza (
 
 -- Table: Skladniki
 CREATE TABLE Skladniki (
-    id int  NOT NULL,
+    id int AUTO_INCREMENT NOT NULL,
     nazwa varchar(255)  NOT NULL,
     CONSTRAINT Skladniki_pk PRIMARY KEY (id)
 );
 
 -- Table: PizzaSkladniki
 CREATE TABLE PizzaSkladniki (
-    skladnikId int  NOT NULL,
+    skladnikId int AUTO_INCREMENT NOT NULL,
     pizzaId int  NOT NULL,
     CONSTRAINT PizzaSkladniki_pk PRIMARY KEY (skladnikId,pizzaId)
 );
 
 -- Table: User
 CREATE TABLE User (
-    id int  NOT NULL,
+    id int AUTO_INCREMENT NOT NULL,
     username varchar(255)  NOT NULL,
-    password varchar(255)  NOT NULL,
+    password varchar(500)  NOT NULL,
     rola varchar(50)  NOT NULL,
     CONSTRAINT User_pk PRIMARY KEY (id)
 );
 
 -- Table: Zamowienie
 CREATE TABLE Zamowienie (
-    id int  NOT NULL,
+    id int AUTO_INCREMENT  NOT NULL,
     userId int  NOT NULL,
     imie varchar(255)  NOT NULL,
     status boolean  NOT NULL,
@@ -47,7 +47,7 @@ CREATE TABLE Zamowienie (
 
 -- Table: ZamowionePrzedmioty
 CREATE TABLE ZamowionePrzedmioty (
-    id int  NOT NULL,
+    id int AUTO_INCREMENT NOT NULL,
     pizzaId int  NOT NULL,
     orderId int  NOT NULL,
     nazwa varchar(255)  NOT NULL,
@@ -105,8 +105,8 @@ INSERT INTO PizzaSkladniki (skladnikId, pizzaId) VALUES
 
 -- Dla tabeli User
 INSERT INTO User (id, username, password, rola) VALUES
-(1, 'user', '123', 'klient'),
-(2, 'admin', 'admin', 'admin');
+(1, 'TEST', '$2b$10$E/BApm3wVwEhYzEvOQGd1uHwZzhy2xy/soyQLJyjwbVJSilJ4zi4u', 'User'),
+(2, 'adm', '$2b$10$NA0HuERNIr/ragI/uznQSuPZzBBp03ymADn8Mf30BJeilms9PjLMy', 'Admin');
 
 -- Dla tabeli Zamowienie
 INSERT INTO Zamowienie (id, userId, imie, status, priorytet, przewidywanaDostawa, cenaRazem, cenaPriorytetu) VALUES

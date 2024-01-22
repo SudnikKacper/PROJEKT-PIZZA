@@ -1,8 +1,17 @@
 // components/AddPizza.js
 import React, { useState, useEffect } from "react";
 import {addPizza, getAllData} from "../services/API";
+import useCookies from "./useCookies";
 
 const AddPizza = () => {
+    const { getCookie } = useCookies('role');
+    const userRole = getCookie();
+    let role = [];
+    try {
+        role = userRole.split('+');
+    } catch (error) {
+        role = ["",0]
+    }
     const [skladniki, setSkladniki] = useState([]);
     const [pizzaData, setPizzaData] = useState({
         nazwa: "",
@@ -64,46 +73,57 @@ const AddPizza = () => {
 
     return (
         <div>
-            <h2>Add Pizza</h2>
-            <form>
-                <label>
-                    Name:
-                    <input type="text" name="nazwa" value={pizzaData.nazwa} onChange={handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    Price:
-                    <input type="number" name="cena" value={pizzaData.cena} onChange={handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    Image URL:
-                    <input type="text" name="img" value={pizzaData.img} onChange={handleInputChange} />
-                </label>
-                <br />
-                <label>
-                    Available:
-                    <input type="checkbox" name="dostepne" checked={pizzaData.dostepne} onChange={handleInputChange} />
-                </label>
-                <br />
-                <label>Ingredients:</label>
-                {skladniki.map((skladnik) => (
-                    <div key={skladnik.id}>
+            {
+                role[0] ==="Admin" &&
+                <div>
+                    <h2>Add Pizza</h2>
+                    <form>
                         <label>
-                            {skladnik.nazwa}:
-                            <input
-                                type="checkbox"
-                                checked={pizzaData.selectedIngredients.includes(skladnik.id)}
-                                onChange={() => handleCheckboxChange(skladnik.id)}
-                            />
+                            Name:
+                            <input type="text" name="nazwa" value={pizzaData.nazwa} onChange={handleInputChange}/>
                         </label>
-                    </div>
-                ))}
-                <br />
-                <button type="button" onClick={handleAddPizza}>
-                    Add Pizza
-                </button>
-            </form>
+                        <br/>
+                        <label>
+                            Price:
+                            <input type="number" name="cena" value={pizzaData.cena} onChange={handleInputChange}/>
+                        </label>
+                        <br/>
+                        <label>
+                            Image URL:
+                            <input type="text" name="img" value={pizzaData.img} onChange={handleInputChange}/>
+                        </label>
+                        <br/>
+                        <label>
+                            Available:
+                            <input type="checkbox" name="dostepne" checked={pizzaData.dostepne}
+                                   onChange={handleInputChange}/>
+                        </label>
+                        <br/>
+                        <label>Ingredients:</label>
+                        {skladniki.map((skladnik) => (
+                            <div key={skladnik.id}>
+                                <label>
+                                    {skladnik.nazwa}:
+                                    <input
+                                        type="checkbox"
+                                        checked={pizzaData.selectedIngredients.includes(skladnik.id)}
+                                        onChange={() => handleCheckboxChange(skladnik.id)}
+                                    />
+                                </label>
+                            </div>
+                        ))}
+                        <br/>
+                        <button type="button" onClick={handleAddPizza}>
+                            Add Pizza
+                        </button>
+                    </form>
+                </div>
+            }
+            {
+            role[0] !== "Admin" && <div>
+                <p> Brak uprawnień</p>
+            </div>
+            }
         </div>
     );
 };

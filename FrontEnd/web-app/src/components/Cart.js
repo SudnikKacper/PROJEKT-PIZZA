@@ -12,13 +12,20 @@ function Cart({ cart, onRemoveFromCart, onPlaceOrder}) {
             <ul>
                 {cart.map((item, index) => (
                     <li key={index}>
-                        {item.name} - Quantity: {item.quantity} - Total: {parseFloat(item.total).toFixed(2)} PLN
+                        <div>
+                            {item.name} - Quantity: {item.quantity}
+                        </div>
+                        <div>
+                            Total: {parseFloat(item.total).toFixed(2)} PLN
+                        </div>
                         <button onClick={() => onRemoveFromCart(item.pizzaId)}>❌</button>
                     </li>
                 ))}
             </ul>
             <Link to={{ pathname: "/order" }}>
-                <button onClick={onPlaceOrder}>Przejdź do zamówienia</button>
+                <button onClick={onPlaceOrder} disabled={!cart.length}>
+                    Przejdź do zamówienia
+                </button>
             </Link>
         </div>
     );

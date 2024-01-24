@@ -1,4 +1,3 @@
-// components/Order.js
 import React, { useState } from "react";
 import useCookies from "./useCookies";
 import {addOrder} from "../services/API";
@@ -36,21 +35,21 @@ function Order({ cart, onRemoveFromCart}) {
         e.preventDefault();
 
         try {
-            // Dodaj przewidywaną dostawę jako czas teraz + 2 minuty
+            // Add expected delivery as time now + 2 minutes
             const deliveryTime = new Date(Date.now() + 2 * 60 * 1000);
 
             await addOrder({
-                userId: (!role ? 1 : role[1]), //Domyślnie jest 1
+                userId: (!role ? 1 : role[1]), //Default 1
                 customerName: customerName,
-                status: true, // Domyślnie ustawiamy status na true,
-                priority: isPriority ? 1 : 0, // Jeśli priorytet jest zaznaczony, ustawiamy na 1, w przeciwnym razie na 0,
-                deliveryTime: deliveryTime.toISOString(), // Formatowanie czasu na ISO
-                cartContent: cart.map(item => ({ pizzaId: item.pizzaId, name: item.name, quantity: item.quantity, total: parseFloat(item.total) })),
-                totalAmount: parseFloat(totalAmount), // Całkowita cena zamówienia,
-                prioAmount: (parseFloat(totalAmount) * 0.15).toFixed(2), // Cena za priorytet
+                status: true, // Default true,
+                priority: isPriority ? 1 : 0, // If priority is selected, set to 1, otherwise set to 0,
+                deliveryTime: deliveryTime.toISOString(), // Formatting time to ISO
+                cartContent: cart.map(item => ({ pizzaId: item.pizzaId, name: item.name, quantity: item.quantity, total: parseFloat(item.total) })), // Content of the cart
+                totalAmount: parseFloat(totalAmount), // Total order price,
+                prioAmount: (parseFloat(totalAmount) * 0.15).toFixed(2), // Price for priority
             });
 
-            // Po obsłużeniu formularza, możesz zresetować stany poniżej:
+
             setCustomerName("");
             setIsPriority(false);
             onCartRefresh();
@@ -84,18 +83,19 @@ function Order({ cart, onRemoveFromCart}) {
                 <form onSubmit={handleSubmit}>
                     <label>
                         Imię:
-                        <input type="text" name="customerName" value={customerName} onChange={handleInputChange} />
+                        <input type="text" name="customerName" value={customerName} onChange={handleInputChange} required/>
                     </label>
                     <label>
                         Priorytet:
-                        <input type="checkbox" name="isPriority" checked={isPriority} onChange={handleInputChange} />
+                        <input type="checkbox" name="isPriority" checked={isPriority} onChange={handleInputChange}/>
                     </label>
+
                     <button type="submit">Dodaj zamówienie</button>
                 </form>
             </div>
 
-            <div className="OrderSummary">
-                <h2>Podsumowanie:</h2>
+                    <div className="OrderSummary">
+                    <h2>Podsumowanie:</h2>
                 <p>Total: { parseFloat(totalAmount).toFixed(2) } PLN</p>
 
             </div>

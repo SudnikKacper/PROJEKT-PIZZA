@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import NormalUser from "../components/NormalUser";
 import Admin from "../components/Admin";
 import User from "./User";
 import useCookies from "./useCookies";
 
-export default function TEST2() {
+export default function KtoTy() {
     const { getCookie } = useCookies('role');
     const userRole = getCookie();
     let role = [];

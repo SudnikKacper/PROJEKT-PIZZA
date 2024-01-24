@@ -1,5 +1,3 @@
-// components/EditPizza.js
-
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import {deletePizza, getPizzaById, updatePizza} from "../services/API";
@@ -8,14 +6,15 @@ import useCookies from "./useCookies";
 function EditPizza() {
     const { getCookie } = useCookies('role');
     const userRole = getCookie();
-    let role = [];
+    let role;
     try {
         role = userRole.split('+');
     } catch (error) {
         role = ["",0]
     }
+    const [changesMade, setChangesMade] = useState(false);
 
-    // nazwa, cena, img, dostepne
+
     const { id } = useParams();
     const [pizza, setPizza] = useState({
         nazwa: "",
@@ -30,7 +29,7 @@ function EditPizza() {
                 const pizzaData = await getPizzaById(id);
                 setPizza(pizzaData);
             } catch (error) {
-                console.error("Błąd łądowania danych pizzy:", error);
+                console.error("Error Loading pizza data:", error);
             }
         };
 
@@ -38,27 +37,31 @@ function EditPizza() {
     }, [id]);
 
     const handleInputChange = (e) => {
-        const { name, value } = e.target;
+        const { name, value, type, checked } = e.target;
         setPizza((prevPizza) => ({
             ...prevPizza,
             [name]: value,
+            [name]: type === 'checkbox' ? checked : value,
         }));
+        setChangesMade(true);
     };
     const handleDeletePizza = async () => {
         try {
             await deletePizza(id);
-            console.log("Pizza usunięta");
+            console.log("Pizza deleted");
+            setChangesMade(false);
         } catch (error) {
-            console.error("Błąd usuwania pizzy:", error);
+            console.error("Error when deleting pizza:", error);
         }
     };
 
     const handleUpdatePizza = async () => {
         try {
             await updatePizza(id, pizza);
-            console.log("Pizza została zaktualizowana");
+            console.log("Pizza updated");
+            setChangesMade(false);
         } catch (error) {
-            console.error("Błąd przy aktualizacji pizzy:", error);
+            console.error("Error when upadting pizza:", error);
         }
     };
 
@@ -112,20 +115,15 @@ function EditPizza() {
                         type="checkbox"
                         name="dostepne"
                         checked={pizza.dostepne}
-                        onChange={() =>
-                            setPizza((prevPizza) => ({
-                                ...prevPizza,
-                                dostepne: !prevPizza.dostepne,
-                            }))
-                        }
+                        onChange={handleInputChange}
                         required
                     />
                 </label>
                 <br/>
-                <button type="button" onClick={handleUpdatePizza}>Zapisz zmiany</button>
+                <button type="button" onClick={handleUpdatePizza} disabled={!changesMade}>Zapisz zmiany</button>
 
             </form>
-        </div>
+                </div>
             }
             {
                 role[0] !== "Admin" && <div>

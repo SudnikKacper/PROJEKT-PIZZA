@@ -1,37 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { getAllOrders, updateOrderStatus, deleteOrder } from "../services/API";
-import useCookies from "./useCookies";
 
 function AllZamowienia() {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
-    const { getCookie } = useCookies('role');
-    const userRole = getCookie();
-    let role = [];
-    try {
-        role = userRole.split('+');
-    } catch (error) {
-        role = ["",0]
-    }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch orders data
                 const orderData = await getAllOrders();
 
-                // Set the orders state with the received data
                 setOrders(orderData);
 
             } catch (error) {
-                // Handle errors
                 setError(error.message);
             }
         };
 
-        // Call the fetchData function
         fetchData();
-    }, []); // Empty dependency array ensures the effect runs only once on mount
+    }, []);
 
     const handleStatusChange = async (orderId) => {
         try {
@@ -39,7 +26,6 @@ function AllZamowienia() {
             await updateOrderStatus(orderId, 0);
 
 
-            // Refetch orders data after the status change
             const orderData = await getAllOrders();
             setOrders(orderData);
         } catch (error) {
@@ -52,11 +38,9 @@ function AllZamowienia() {
 
             await deleteOrder(orderId);
 
-            // Refetch orders data after the status change
             const orderData = await getAllOrders();
             setOrders(orderData);
         } catch (error) {
-            // Handle errors
             setError(error.message);
         }
     };

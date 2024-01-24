@@ -81,7 +81,7 @@ ALTER TABLE ZamowionePrzedmioty ADD CONSTRAINT ZamowionePrzedmioty_Zamowienie FO
 -- Dla tabeli Pizza
 INSERT INTO Pizza (id, nazwa, cena, img, dostepne) VALUES
 (1, 'Margherita', 39.99, 'https://cdn.loveandlemons.com/wp-content/uploads/2019/09/margherita-pizza-846x846.jpg', true),
-(2, 'Pepperoni', 45.99, 'https://assets.afcdn.com/recipe/20190319/89655_w3072h2304c1cx3680cy2456.jpg', true),
+(2, 'Pepperoni', 45.99, 'https://images.afcdn.com/recipe/20190319/89655_w3072h2304c1cx3680cy2456.jpg', true),
 (3, 'Vegetariana', 40.99, 'https://www.twopeasandtheirpod.com/wp-content/uploads/2021/03/Veggie-Pizza-8.jpg', true);
 
 

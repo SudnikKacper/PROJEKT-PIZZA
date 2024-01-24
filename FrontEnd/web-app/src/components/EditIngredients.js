@@ -1,4 +1,3 @@
-// components/EditIngredients.js
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { getPizzaAndIngredients, updatePizzaIngredients } from "../services/API";
@@ -7,7 +6,7 @@ import useCookies from "./useCookies";
 const EditIngredients = () => {
     const { getCookie } = useCookies('role');
     const userRole = getCookie();
-    let role = [];
+    let role;
     try {
         role = userRole.split('+');
     } catch (error) {
@@ -18,6 +17,8 @@ const EditIngredients = () => {
         nazwa: "",
         ingredients: [],
     });
+    const [changesMade, setChangesMade] = useState(false);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -25,7 +26,7 @@ const EditIngredients = () => {
                 const data = await getPizzaAndIngredients(id);
                 setPizza(data);
             } catch (error) {
-                console.error('Błąd ładowania pizzy i skłądników:', error);
+                console.error('Error loading pizza and ingriditnts:', error);
             }
         };
 
@@ -34,22 +35,25 @@ const EditIngredients = () => {
 
     const handleCheckboxChange = (skladnikId) => {
 
-        //mapuje tablicę składników w obecnej pizzy, po czym jak się zmieni to tworzy nową tablicę tych skłądników
+        //maps the array of ingredients in the current pizza and then, when it changes, creates a new array of these ingredients
         setPizza((prevPizza) => ({
             ...prevPizza,
             ingredients: prevPizza.ingredients.map((skladnik) =>
                 skladnik.id === skladnikId ? { ...skladnik, selected: !skladnik.selected } : skladnik
             ),
         }));
+        setChangesMade(true);
     };
 
     const handleUpdateIngredients = async () => {
         try {
             await updatePizzaIngredients(id, pizza.ingredients.filter((skladnik) => skladnik.selected).map((skladnik) => skladnik.id));
 
-            console.log('Zaktualizowano składniki');
+            console.log('Ingredients updated');
+
+            setChangesMade(false);
         } catch (error) {
-            console.error('Błąd w aktualizacji skadników:', error);
+            console.error('Erred updating ingredients:', error);
         }
     };
 
@@ -57,28 +61,28 @@ const EditIngredients = () => {
         <div>
         {
             role[0] ==="Admin" &&
-        <div>
-            <h2>Edit Ingredients</h2>
-            <form>
-                <h3>{pizza.nazwa}</h3>
-                {pizza.ingredients.map((skladnik) => (
-                    <div key={skladnik.id}>
-                        <label>
-                            {skladnik.nazwa}:
-                            <input
-                                type="checkbox"
-                                checked={skladnik.selected}
-                                onChange={() => handleCheckboxChange(skladnik.id)}
-                            />
-                        </label>
-                    </div>
-                ))}
-                <br />
-                <button type="button" onClick={handleUpdateIngredients}>
-                    Save Changes
-                </button>
-            </form>
-        </div>
+            <div>
+                <h2>Edit Ingredients</h2>
+                <form>
+                    <h3>{pizza.nazwa}</h3>
+                    {pizza.ingredients.map((skladnik) => (
+                        <div key={skladnik.id}>
+                            <label>
+                                {skladnik.nazwa}:
+                                <input
+                                    type="checkbox"
+                                    checked={skladnik.selected}
+                                    onChange={() => handleCheckboxChange(skladnik.id)}
+                                />
+                            </label>
+                        </div>
+                    ))}
+                    <br/>
+                    <button id="saveButton" type="button" onClick={handleUpdateIngredients} disabled={!changesMade}>
+                        Save Changes
+                    </button>
+                </form>
+            </div>
         }
             {
                 role[0] !== "Admin" && <div>

@@ -8,37 +8,37 @@ export const getMenu = async () => {
 
         if (!response.ok) {
             throw new Error(
-                `Błąd ładowania menu: ${response.status} - ${response.statusText}`
+                `Menu loading error: ${response.status} - ${response.statusText}`
             );
         }
 
         const data = await response.json();
 
-        // Weryfikacja struktury danych
+        // Verification of data structure
         if (!isValidMenuData(data)) {
-            throw new Error('Nieprawidłowa struktura danych otrzymana dla menu.');
+            throw new Error('Incorrect data structure obtained for the menu.');
         }
 
         return data;
     } catch (error) {
-        console.error("Błąd ładowania menu:", error.message);
+        console.error("Error when loading menu:", error.message);
         throw error;
     }
 };
 
 const isValidMenuData = (menuData) => {
-    // Sprawdzanie czy każda pizza w menu posiada oczekiwane elementy
+    // Checking that each pizza on the menu has the expected elements
     const expectedKeys = ['pizzaId', 'nazwa_pizzy', 'cena', 'img', 'skladniki'];
 
     for (const pizza of menuData) {
         for (const key of expectedKeys) {
             if (!(key in pizza)) {
-                console.error(`Brak oczekiwanego klucza dla pizzy w menu: ${key}`);
+                console.error(`No expected key for pizza on the menu: ${key}`);
                 return false;
             }
         }
 
-        // Weryfikacja struktury składników dla każdej pizzy
+        // Verification of the ingredient structure for each pizza
         if (!isValidIngredientsData(pizza.skladniki)) {
             return false;
         }
@@ -48,13 +48,13 @@ const isValidMenuData = (menuData) => {
 };
 
 const isValidIngredientsData = (ingredientsData) => {
-    // Sprawdzanie czy każdy składnik posiada oczekiwane elementy
+    // Checking that each component has the expected elements
     const expectedKeys = ['skladnikId', 'nazwa_skladnika'];
 
     for (const ingredient of ingredientsData) {
         for (const key of expectedKeys) {
             if (!(key in ingredient)) {
-                console.error(`Brak oczekiwanego klucza dla składnika w menu: ${key}`);
+                console.error(`No expected key for the component in the menu: ${key}`);
                 return false;
             }
         }
@@ -62,6 +62,9 @@ const isValidIngredientsData = (ingredientsData) => {
 
     return true;
 };
+
+//======================================================================//
+
 
 export const getAllData = async () => {
     try {
@@ -74,36 +77,39 @@ export const getAllData = async () => {
 
         if (!response.ok) {
             throw new Error(
-                `Błąd w łądowaniu wszystkich danych do AllData: ${response.status} - ${response.statusText}`
+                `Error loading all data: ${response.status} - ${response.statusText}`
             );
         }
 
         const responseData = await response.json();
 
         if (!isValidDataStructure(responseData)) {
-            throw new Error('Nieprawidłowa struktura otrzymanych danych z serwera API')
+            throw new Error('Incorrect structure of the data received from the API server')
         }
 
         return responseData;
     } catch (error) {
-        console.error('Błąd w łądowaniu wszystkich danych do AllData:', error);
+        console.error('Error when loading allData:', error);
         throw error;
     }
 };
 
 const isValidDataStructure = (data) => {
-    // Sprawdzenie czy data posiada konkretne elementy
+    // Checking whether a date has specific elements
     const expectedKeys = ['Pizza', 'PizzaSkladniki', 'Skladniki', 'User', 'Zamowienie', 'ZamowionePrzedmioty'];
 
     for (const key of expectedKeys) {
         if (!(key in data)) {
-            console.error(`Brak oczekiwanego klusza: ${key}`);
+            console.error(`No expected key: ${key}`);
             return false
         }
     }
 
     return true;
 }
+
+//======================================================================//
+
 
 export const getPizzaById = async (pizzaId) => {
     try {
@@ -114,30 +120,30 @@ export const getPizzaById = async (pizzaId) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Błąd ładowania po id: ${response.status} - ${response.statusText}`);
+            throw new Error(`Loading error after id: ${response.status} - ${response.statusText}`);
         }
 
         const pizzaData = await response.json();
 
-        // Weryfikacja struktury danych
+        // Verification of data structure
         if (!isValidPizzaData(pizzaData)) {
-            throw new Error('Nieprawidłowa struktura danych otrzymana dla pizzy.');
+            throw new Error('Incorrect data structure obtained for pizzas.');
         }
 
         return pizzaData;
     } catch (error) {
-        console.error("Błąd ładowania po id:", error);
+        console.error("Error when getting pizza by id:", error);
         throw error;
     }
 };
 
 const isValidPizzaData = (pizzaData) => {
-    // Sprawdzanie czy JSON ma takie elementy
+    // Checking whether the JSON has these elements
     const expectedKeys = ['id', 'nazwa', 'cena', 'img', 'dostepne'];
 
     for (const key of expectedKeys) {
         if (!(key in pizzaData)) {
-            console.error(`Brak oczekiwanego klucza dla pizzy: ${key}`);
+            console.error(`No expected key for pizzas: ${key}`);
             return false;
         }
     }
@@ -146,13 +152,16 @@ const isValidPizzaData = (pizzaData) => {
     return true;
 };
 
+//======================================================================//
+
+
 export const updatePizza = async (pizzaId, updatedPizza) => {
 
     try {
 
-        // Sprawdzamy czy jest poprawna struktura przed wysłaniem
+        // We check that the structure is correct before sending
         if (!isValidPizzaUpdateData(updatedPizza)) {
-            throw new Error('Nieprawidłowa struktura danych dla aktualizacji pizzy.');
+            throw new Error('Incorrect data structure for pizza updates.');
         }
 
         const response = await fetch(`http://localhost:9951/updatePizza/${pizzaId}`, {
@@ -165,7 +174,7 @@ export const updatePizza = async (pizzaId, updatedPizza) => {
 
         if (!response.ok) {
             throw new Error(
-                `Błąd aktualizacji pizzy: ${response.status} - ${response.statusText}`
+                `Pizza update error: ${response.status} - ${response.statusText}`
             );
         }
 
@@ -173,19 +182,18 @@ export const updatePizza = async (pizzaId, updatedPizza) => {
         console.log(responseData);
         return responseData;
     } catch (error) {
-        console.error("Błąd aktualizacji pizzy:", error);
+        console.error("Error when updating pizza:", error);
         throw error;
     }
 };
 
-
 const isValidPizzaUpdateData = (updatedPizza) => {
-    // Sprawdzenie czy obiekt posiada oczekiwane elementy
+    // Checking whether the object has the expected elements
     const expectedKeys = ['id', 'nazwa', 'cena', 'img', 'dostepne'];
 
     for (const key of expectedKeys) {
         if (!(key in updatedPizza)) {
-            console.error(`Brak oczekiwanego klucza dla aktualizacji pizzy: ${key}`);
+            console.error(`No expected key for pizza update: ${key}`);
             return false;
         }
     }
@@ -193,6 +201,9 @@ const isValidPizzaUpdateData = (updatedPizza) => {
 
     return true;
 };
+
+//======================================================================//
+
 
 export const getPizzaAndIngredients = async (pizzaId) => {
     try {
@@ -203,35 +214,35 @@ export const getPizzaAndIngredients = async (pizzaId) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Błąd ładowania pizzy i składników: ${response.status} - ${response.statusText}`);
+            throw new Error(`Error loading pizzas and ingredients: ${response.status} - ${response.statusText}`);
         }
 
         const responseData = await response.json();
 
-        // Weryfikacja struktury danych
+        // Verification of data structure
         if (!isValidPizzaAndIngredientsData(responseData)) {
-            throw new Error('Nieprawidłowa struktura danych otrzymana dla pizzy i składników.');
+            throw new Error('Incorrect data structure obtained for pizzas and ingredients.');
         }
 
         return responseData;
     } catch (error) {
-        console.error('Błąd ładowania pizzy i składników:', error);
+        console.error('Error loading pizzas and ingredients:', error);
         throw error;
     }
 };
 
 const isValidPizzaAndIngredientsData = (data) => {
-    // Sprawdzanie czy pizza posiada oczekiwane elementy
+    // Checking that the pizza has the expected elements
     const expectedKeys = ['pizzaName', 'ingredients'];
 
     for (const key of expectedKeys) {
         if (!(key in data)) {
-            console.error(`Brak oczekiwanego klucza dla pizzy i składników: ${key}`);
+            console.error(`No expected key for pizzas and ingredients: ${key}`);
             return false;
         }
     }
 
-    // Weryfikacja struktury danych dla składników
+    // Verification of data structure for components
     if (!isValidIngredientsData2(data.ingredients)) {
         return false;
     }
@@ -240,13 +251,13 @@ const isValidPizzaAndIngredientsData = (data) => {
 };
 
 const isValidIngredientsData2 = (ingredientsData) => {
-    // Sprawdzanie czy każdy składnik posiada oczekiwane elementy
+    // Checking that each component has the expected elements
     const expectedKeys = ['id', 'nazwa', 'selected'];
 
     for (const ingredient of ingredientsData) {
         for (const key of expectedKeys) {
             if (!(key in ingredient)) {
-                console.error(`Brak oczekiwanego klucza dla składnika w danych pizzy i składników: ${key}`);
+                console.error(`Missing expected key for ingredient in pizza and ingredient data: ${key}`);
                 return false;
             }
         }
@@ -255,13 +266,16 @@ const isValidIngredientsData2 = (ingredientsData) => {
     return true;
 };
 
+//======================================================================//
+
+
 export const updatePizzaIngredients = async (pizzaId, selectedIngredients) => {
     try {
         const expectedKey = ['ingredients'];
-        // Sprawdzanie czy składnik posiada poprawny element
+        // Checking whether a component has a valid element
         for (const key in expectedKey) {
             if (!(key in selectedIngredients)) {
-                throw Error('Brak oczekiwanego klucza dla aktualizacji skłądników')
+                throw Error('No expected key for component update')
             }
         }
 
@@ -273,17 +287,20 @@ export const updatePizzaIngredients = async (pizzaId, selectedIngredients) => {
             body: JSON.stringify({ ingredients: selectedIngredients }),
         });
     } catch (error) {
-        console.error('Błąd aktualizowania skłądnikó:', error);
+        console.error('Error updating ingredients:', error);
         throw error;
     }
 };
+
+//======================================================================//
+
 
 export const deletePizza = async (pizzaId) => {
     try {
         const pizzaExists = await checkPizzaExists(pizzaId);
 
         if (!pizzaExists) {
-            throw new Error(`Pizza o identyfikatorze ${pizzaId} nie istnieje.`);
+            throw new Error(`Pizza with ID ${pizzaId} does not exist.`);
         }
 
 
@@ -295,14 +312,12 @@ export const deletePizza = async (pizzaId) => {
         });
 
         if (!response.ok) {
-            throw new Error(
-                `Błąd usuwania pizzy: ${response.status} - ${response.statusText}`
-            );
+            throw new Error(`Error when deleting pizza: ${response.status} - ${response.statusText}`);
         }
 
         return await response.json();
     } catch (error) {
-        console.error("Błąd usuwania pizzy:", error.message);
+        console.error("Error when deleting pizza:", error.message);
         throw error;
     }
 };
@@ -316,22 +331,25 @@ const checkPizzaExists = async (pizzaId) => {
         });
 
         if (!response.ok) {
-            return false;
+            throw new Error(`Error checking pizza: ${response.status} - ${response.statusText}`);
         }
 
         const pizzaData = await response.json();
         return !!pizzaData; // Zwraca true, jeśli pizza istnieje, a false w przeciwnym razie
     } catch (error) {
-        console.error("Błąd weryfikacji istnienia pizzy:", error.message);
+        console.error("Error when checking if pizza exists:", error.message);
         throw error;
     }
 };
 
+//======================================================================//
+
+
 export const addPizza = async (pizzaData) => {
     try {
-        // Weryfikacja struktury danych przed wysłaniem
+        // Verification of data structure before sending
         if (!isValidPizzaDataForAdd(pizzaData)) {
-            throw new Error('Nieprawidłowa struktura danych dla dodawania pizzy.');
+            throw new Error('Incorrect data structure for adding pizzas.');
         }
 
         const response = await fetch("http://localhost:9951/addPizza", {
@@ -343,43 +361,46 @@ export const addPizza = async (pizzaData) => {
         });
 
         if (!response.ok) {
-            throw new Error(`Błąd dodawania pizzy: ${response.status} - ${response.statusText}`);
+            throw new Error(`Error loading pizza: ${response.status} - ${response.statusText}`);
         }
 
-        console.log("Pizza dodana");
+        console.log("Pizza added");
 
         await getMenu();
     } catch (error) {
-        console.error("Błąd dodawania pizzy:", error);
+        console.error("Error when adding pizza:", error);
         throw error;
     }
 };
 
 const isValidPizzaDataForAdd = (pizzaData) => {
-    // Sprawdź, czy obiekt posiada oczekiwane elementy
+    // checks if the pizzaData object contains all the expected keys
     const expectedKeys = ['nazwa', 'cena', 'img', 'dostepne', 'skladniki'];
 
     for (const key of expectedKeys) {
         if (!(key in pizzaData)) {
-            console.error(`Brak oczekiwanego klucza dla dodawania pizzy: ${key}`);
+            console.error(`No expected key for adding pizzas: ${key}`);
             return false;
         }
     }
 
-    // Sprawdź, czy skladniki to tablica
+    // checks whether the 'skladniki' field in the pizzaData object is an array
     if (!Array.isArray(pizzaData.skladniki)) {
-        console.error('Pole "skladniki" powinno być tablicą.');
+        console.error('Field \'skladniki\' should be an array.');
         return false;
     }
 
-    // Sprawdź, czy elements w tablicy składników są liczbami
+    // checks whether all elements in the 'skladniki' array of the pizzaData object are of the number type
     if (!pizzaData.skladniki.every((element) => typeof element === 'number')) {
-        console.error('Wszystkie elementy w tablicy "skladniki" powinny być liczbami.');
+        console.error('All elements of \'skladniki\' should be a number.');
         return false;
     }
 
     return true;
 };
+
+//======================================================================//
+
 
 export const addOrder = async (orderData) => {
     try {
@@ -393,14 +414,16 @@ export const addOrder = async (orderData) => {
 
         const data = await response.json();
 
-        // Tutaj możesz obsłużyć odpowiedź od serwera
+        console.log(data);
 
         return data;
     } catch (error) {
-        console.error('Błąd podczas dodawania zamówienia:', error);
+        console.error('Error during adding order:', error);
         throw error;
     }
 };
+
+//======================================================================//
 
 
 export const getAllOrders = async () => {
@@ -419,10 +442,7 @@ export const getAllOrders = async () => {
 
         const data = await response.json();
 
-        // Validate the structure if needed
-        // if (!isValidOrderData(data)) {
-        //   throw new Error('Invalid order data structure.');
-        // }
+        console.log(data);
 
         return data;
     } catch (error) {
@@ -430,6 +450,9 @@ export const getAllOrders = async () => {
         throw error;
     }
 };
+
+//======================================================================//
+
 
 export const updateOrderStatus = async (orderId, newStatus) => {
     try {
@@ -441,20 +464,23 @@ export const updateOrderStatus = async (orderId, newStatus) => {
             body: JSON.stringify({
                 newStatus,
             }),
-            credentials: 'include', // Include credentials for cross-origin requests
+            credentials: 'include',
         });
 
         if (!response.ok) {
             throw new Error('Failed to update order status');
         }
 
-        // Return the updated order data
         const updatedOrderData = await response.json();
+        console.log(updatedOrderData);
         return updatedOrderData;
     } catch (error) {
         throw new Error(`Error updating order status: ${error.message}`);
     }
 };
+
+//======================================================================//
+
 
 export const deleteOrder = async (orderId) => {
     try {
@@ -469,12 +495,14 @@ export const deleteOrder = async (orderId) => {
 
         // Return a success message or any other relevant data
         const result = await response.json();
+        console.log(result);
         return result;
     } catch (error) {
         throw new Error(`Error deleting order: ${error.message}`);
     }
 };
 
+//======================================================================//
 
 
 export const getAllUserOrders = async (userId) => {
@@ -493,14 +521,67 @@ export const getAllUserOrders = async (userId) => {
 
         const data = await response.json();
 
-        // Validate the structure if needed
-        // if (!isValidOrderData(data)) {
-        //   throw new Error('Invalid order data structure.');
-        // }
+        console.log(data);
 
         return data;
     } catch (error) {
         console.error('Error loading orders:', error.message);
+        throw error;
+    }
+};
+
+//======================================================================//
+
+
+export const register = async (userData) => {
+    try {
+        const response = await fetch('http://localhost:9951/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+
+        const data = await response.json();
+
+        console.log(data);
+
+        return data;
+    } catch (error) {
+        console.error('Error during registration:', error);
+        throw error;
+    }
+};
+
+//======================================================================//
+
+
+export const login = async (loginData) => {
+    try {
+        const response = await fetch('http://localhost:9951/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(loginData),
+            credentials: 'include',
+        });
+
+        const data = await response.json();
+
+        if (data.message) {
+            // Handle message accordingly
+        } else {
+            document.cookie = `role=${data[0].rola}+${data[0].id}; path=/`;
+            console.log(data[0].rola);
+            console.log(data[0].id);
+            // Handle login status accordingly
+        }
+
+        return data;
+    } catch (error) {
+        console.error('Error during login:', error);
         throw error;
     }
 };

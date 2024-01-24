@@ -1,11 +1,4 @@
-// App.js
-
-
 //TODO engliszyfaj łebsajt
-//TODO poprawienie logowania/rejestracji jako strony zamiast w test
-//TODO poprawienie navbara
-
-
 
 import React, { useState } from "react";
 import {Route, BrowserRouter as Router, Routes} from "react-router-dom";
@@ -22,10 +15,10 @@ import EditPizza from "./components/EditPizza";
 import EditIngredients from "./components/EditIngredients";
 import AddPizza from "./components/AddPizza";
 import NavBar from "./components/NavBar";
-import TEST from "./components/TEST";
-import TEST2 from "./components/TEST2";
+import KtoTy from "./components/KtoTy";
 import TEST3 from "./components/TEST3";
 import MojeZamowienie from "./components/MojeZamowienie";
+import Login from "./components/Login";
 
 function App() {
 
@@ -73,15 +66,6 @@ function App() {
                 <Router>
                     <Routes>
                         <Route
-                            path={'/TEST'}
-                            element={
-                                <React.Fragment>
-                                    <NavBar />
-                                    <TEST/>
-                                </React.Fragment>
-                            }
-                        />
-                        <Route
                             path={'/TEST3'}
                             element={
                                 <React.Fragment>
@@ -91,11 +75,11 @@ function App() {
                             }
                         />
                         <Route
-                            path={'/TEST2'}
+                            path={'/KtoTy'}
                             element={
                                 <React.Fragment>
                                     <NavBar />
-                                    <TEST2/>
+                                    <KtoTy/>
                                 </React.Fragment>
                             }
                         />
@@ -144,7 +128,16 @@ function App() {
                                     <NavBar />
                                     <EditPizza />
                                 </React.Fragment>
-                        }
+                            }
+                        />
+                        <Route
+                            path="/login"
+                            element={
+                                <React.Fragment>
+                                    <NavBar />
+                                    <Login />
+                                </React.Fragment>
+                            }
                         />
                         <Route
                             path="/pizza/:id/s"

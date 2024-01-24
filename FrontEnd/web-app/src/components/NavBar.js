@@ -1,4 +1,3 @@
-// components/NavBar.js
 import React from "react";
 import {Link} from "react-router-dom";
 
@@ -18,28 +17,39 @@ function NavBar() {
         <div className={'navbar'}>
             <ul>
                 <li>
-                    <NavBarButton to="/" label="STRONA GŁÓWNA" />
+                    <NavBarButton to="/" label="STRONA GŁÓWNA"/>
                 </li>
                 <li>
-                    <NavBarButton to="/na20" label="WYŚWIETLANIE" />
+                    <NavBarButton to="/login" label="LogIn"/>
                 </li>
                 <li>
-                    <NavBarButton to="/pizza/1" label="EDYCJA 1" />
+                    <NavBarButton to="/na20" label="WYŚWIETLANIE"/>
                 </li>
                 <li>
-                    <NavBarButton to="/pizza/1/s" label="EDYCJA 2" />
+                    <NavBarButton to="/pizza/1" label="EDYCJA 1"/>
                 </li>
                 <li>
-                    <NavBarButton to="/pizza/add" label="DODAWANIE" />
+                    <NavBarButton to="/pizza/1/s" label="EDYCJA 2"/>
                 </li>
                 <li>
-                    <NavBarButton to="/order" label="ZAMÓWIENIE" />
+                    <NavBarButton to="/pizza/add" label="DODAWANIE"/>
+                </li>
+                <li>
+                    <NavBarButton to="/order" label="ZAMÓW"/>
+                </li>
+                <li>
+                    <NavBarButton to="/myorder" label="MOJEZAMOWIENIE"/>
+                </li>
+                <li>
+                    <NavBarButton to="/KtoTy" label="SPRAWDŹ KTO TY"/>
+                </li>
+                <li>
+                    <NavBarButton to="/TEST3" label="TEST"/>
                 </li>
             </ul>
         </div>
     );
 }
-
 
 
 export default NavBar;

@@ -1,11 +1,12 @@
 import React from "react";
+import image from "../images/loggedin.jpg";
 
 export default function User() {
     console.log("Rendering User component");
     return (
         <div>
             <h1>User</h1>
-            <img src="https://www.google.com.br/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png" alt="img" />
+            <img src={image} alt="zalogowany" />
         </div>
     );
 }

@@ -11,7 +11,6 @@ function NormalZamowienia() {
     const [userOrders, setUserOrders] = useState([]);
 
     useEffect(() => {
-        // Pobierz zamówienia dla danego użytkownika po zamontowaniu komponentu
         getAllUserOrders(userId)
             .then((response) => {
                 setUserOrders(response);
@@ -21,7 +20,6 @@ function NormalZamowienia() {
             });
     }, [userId]);
 
-    // Funkcja zamieniająca status zamówienia na odpowiedni tekst
     const getStatusText = (status) => {
         return status === 0 ? "Dostarczone" : "W trakcie realizacji";
     };

@@ -142,12 +142,20 @@ button:hover {
     padding: 20px;
 }
 
+.Cart button {
+    min-width: 20px;
+}
+.Order button {
+     min-width: 20px;
+}
+
+
 .navbar {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     max-width: 250px;
-    max-height: 260px; /*przy dodaniu kolejnego guzika do navbaru +40px trzeba dodać bo wypierdoli piza obramówkę*/
+    max-height: 420px; /*przy dodaniu kolejnego guzika do navbaru +40px trzeba dodać bo wypierdoli piza obramówkę*/
     width: 100%;
     border: 1px solid #000000;
     border-radius: 8px;
@@ -158,3 +166,16 @@ button:hover {
 }
 
 
+.registration-card,
+.status-card,
+.login-card {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    width: 300px;
+}
+
+.login-card,
+.status-card {
+    margin-left: 20px;
+}

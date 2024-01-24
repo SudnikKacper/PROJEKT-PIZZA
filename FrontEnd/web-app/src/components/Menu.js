@@ -1,5 +1,3 @@
-// components/Menu.js
-
 import React, { useEffect, useState } from "react";
 import { getMenu } from "../services/API";
 import ReactPaginate from "react-paginate";
@@ -13,11 +11,6 @@ function MenuItem({ item, onAddToCart }) {
     const [quantity, setQuantity] = useState(1);
 
     const handleAddToCart = () => {
-        if (!Number.isInteger(quantity) || quantity <= 0) {
-            alert("To nie jest poprawna liczba.");
-            return;
-        }
-
         onAddToCart({
             pizzaId: item.pizzaId,
             name: item.nazwa_pizzy,
@@ -87,7 +80,7 @@ function Menu({onAddToCart }) {
     const [items, setItems] = useState([]);
 
 //--------------------------//--------------------------//--------------------------//--------------------------//
-/**/    const itemsPerPage = 5; ///// !!! TU ZMIENIAĆ ILOŚĆ PIZZA NA 1 KARCIE                        /**/
+/**/    const itemsPerPage = 2; ///// !!! TU ZMIENIAĆ ILOŚĆ PIZZA NA 1 KARCIE                        /**/
 //--------------------------//--------------------------//--------------------------//--------------------------//
 
 
@@ -97,7 +90,7 @@ function Menu({onAddToCart }) {
                 const data = await getMenu();
                 setItems(data);
             } catch (error) {
-                console.log("Błąd w ładowaniu menu: ", error);
+                console.log("Error when loading menu: ", error);
             }
         };
 

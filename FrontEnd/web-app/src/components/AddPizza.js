@@ -1,4 +1,3 @@
-// components/AddPizza.js
 import React, { useState, useEffect } from "react";
 import {addPizza, getAllData} from "../services/API";
 import useCookies from "./useCookies";
@@ -6,7 +5,7 @@ import useCookies from "./useCookies";
 const AddPizza = () => {
     const { getCookie } = useCookies('role');
     const userRole = getCookie();
-    let role = [];
+    let role;
     try {
         role = userRole.split('+');
     } catch (error) {
@@ -80,23 +79,28 @@ const AddPizza = () => {
                     <form>
                         <label>
                             Name:
-                            <input type="text" name="nazwa" value={pizzaData.nazwa} onChange={handleInputChange}/>
+                            <input type="text" name="nazwa" value={pizzaData.nazwa} onChange={handleInputChange} required/>
                         </label>
                         <br/>
                         <label>
                             Price:
-                            <input type="number" name="cena" value={pizzaData.cena} onChange={handleInputChange}/>
+                            <input type="number" name="cena" value={pizzaData.cena} onChange={handleInputChange} required/>
                         </label>
                         <br/>
                         <label>
                             Image URL:
-                            <input type="text" name="img" value={pizzaData.img} onChange={handleInputChange}/>
+                            <input type="text" name="img" value={pizzaData.img} onChange={handleInputChange} required/>
                         </label>
                         <br/>
                         <label>
                             Available:
-                            <input type="checkbox" name="dostepne" checked={pizzaData.dostepne}
-                                   onChange={handleInputChange}/>
+                            <input
+                                type="checkbox"
+                                name="dostepne"
+                                checked={pizzaData.dostepne}
+                                onChange={handleInputChange}
+                            />
+                            <span>Czy pizza jest dostępna</span>
                         </label>
                         <br/>
                         <label>Ingredients:</label>
@@ -113,15 +117,16 @@ const AddPizza = () => {
                             </div>
                         ))}
                         <br/>
-                        <button type="button" onClick={handleAddPizza}>
+                        <button type="button" onClick={handleAddPizza} disabled={!pizzaData.selectedIngredients.length}>
                             Add Pizza
                         </button>
+
                     </form>
                 </div>
             }
             {
-            role[0] !== "Admin" && <div>
-                <p> Brak uprawnień</p>
+                role[0] !== "Admin" && <div>
+                    <p> Brak uprawnień</p>
             </div>
             }
         </div>

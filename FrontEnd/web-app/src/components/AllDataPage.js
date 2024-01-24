@@ -6,7 +6,7 @@ import useCookies from "./useCookies";
 function AllDataPage() {
     const { getCookie } = useCookies('role');
     const userRole = getCookie();
-    let role = [];
+    let role;
     try {
         role = userRole.split('+');
     } catch (error) {
@@ -20,7 +20,7 @@ function AllDataPage() {
                 const data = await getAllData();
                 setAllData(data);
             } catch (error) {
-                console.error("Błąd w pobieraniu danych:", error);
+                console.error("Error loading data:", error);
             }
         };
 

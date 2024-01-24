@@ -1,5 +1,3 @@
-//TODO Weryfikacja danych
-
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -11,6 +9,7 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser')
 const session = require('express-session')
 const dayjs = require('dayjs')
+const {body, validationResult, param} = require("express-validator");
 
 const connection = mysql.createConnection({
     host: 'localhost',
@@ -37,7 +36,7 @@ app.use(
         resave: false,
         saveUninitialized: false,
         cookie: {
-            expires: 120000
+            expires: 60 * 60 * 1000 // 3600s
         },
     })
 );
@@ -46,17 +45,60 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 
+
+
 app.get('/getAll/Pizze', (req, res) => {
     displayDetailedView((jsonData) => {
-        res.json(jsonData); // Zwracanie danych w formacie JSON jako odpowiedź na zapytanie HTTP
+        res.json(jsonData);
     });
 });
 
-app.post('/addOrder', (req, res) => {
+app.post(
+    '/addOrder',
+    [
+        // Validate userId as integer
+        body('userId').isInt(),
+
+        // Validate customerName as string
+        body('customerName').isString(),
+
+        // Validate status as boolean
+        body('status').isBoolean(),
+
+        // Validate priority as integer (0 or 1)
+        body('priority').isIn([0, 1]).toInt(),
+
+        // Validate deliveryTime as a date in the future
+        body('deliveryTime').isAfter(),
+
+        // Validate cartContent as not empty
+        body('cartContent').isArray({ min: 1 }),
+
+        // Validate totalAmount as a number greater than 0
+        body('totalAmount').isFloat({ gt: 0 }),
+
+        // Validate prioAmount as a number greater than 0 if priority is 1
+        body('prioAmount').custom((value, { req }) => {
+            if (req.body.priority === 1) {
+                if (!value || isNaN(value) || value <= 0) {
+                    throw new Error('prioAmount must be a number greater than 0 when priority is 1');
+                }
+            }
+            return true;
+        }),
+    ],
+    (req, res) => {
+        // Check for validation errors
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+
     const { userId, customerName, status, priority, deliveryTime, totalAmount, prioAmount, cartContent } = req.body;
     const formattedDeliveryTime = dayjs(deliveryTime).format('YYYY-MM-DD HH:mm:ss');
 
-    // Dodaj zamówienie
+
     const addOrderQuery = `
         INSERT INTO Zamowienie (userId, imie, status, priorytet, przewidywanaDostawa, cenaRazem, cenaPriorytetu)
         VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -69,7 +111,7 @@ app.post('/addOrder', (req, res) => {
         } else {
             const orderId = result.insertId;
 
-            // Dodaj zamówione przedmioty (elementy koszyka)
+
             const addOrderedItemsQuery = `
                 INSERT INTO ZamowionePrzedmioty (orderId, pizzaId, nazwa, ilosc, cenaSzt, razem)
                 VALUES (?, ?, ?, ?, ?, ?)
@@ -185,7 +227,6 @@ app.get('/getAll/Zamowienia/:id', (req, res) => {
     });
 });
 
-// Wyświetlenie listy wszystkich rekordów dla każdej tabeli
 app.get('/getAllRecords', (req, res) => {
     const tables = [
         'Pizza',
@@ -225,7 +266,29 @@ app.get('/getPizza/:pizzaId', (req, res) => {
     });
 });
 
-app.put('/updatePizza/:id', (req, res) => {
+app.put('/updatePizza/:id', [
+    // Validate pizzaId as integer
+    body('id').isInt(),
+
+    // Validate nazwa as string
+    body('nazwa').isString(),
+
+    // Validate cena as a number greater than 0
+    body('cena').isFloat({ gt: 0 }),
+
+    // Validate img as string
+    body('img').isString(),
+
+    // Validate dostepne as boolean
+    body('dostepne').isBoolean(),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const pizzaId = req.params.id;
     const { nazwa, cena, img, dostepne } = req.body;
 
@@ -247,6 +310,8 @@ app.put('/updatePizza/:id', (req, res) => {
         }
     });
 });
+
+
 app.get('/getPizza/:id/s', (req, res) => {
     const { id } = req.params;
     const pizzaId = parseInt(id, 10);
@@ -284,7 +349,21 @@ app.get('/getPizza/:id/s', (req, res) => {
     });
 });
 
-app.put('/updatePizzaIngredients/:id', (req, res) => {
+app.put('/updatePizzaIngredients/:id',
+    [
+    // Validate pizzaId as integer
+    body('id').isInt(),
+
+    // Validate ingredients as an array with at least one element
+    body('ingredients').isArray({ min: 1 }),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const pizzaId = req.params.id;
     const selectedIngredients = req.body.ingredients;
 
@@ -314,22 +393,33 @@ app.put('/updatePizzaIngredients/:id', (req, res) => {
     });
 });
 
-app.post('/addPizza', (req, res) => {
+app.post('/addPizza',
+    [
+    // Validate nazwa as string
+    body('nazwa').isString(),
+
+    // Validate cena as a number greater than 0
+    body('cena').isFloat({ gt: 0 }),
+
+    // Validate img as string
+    body('img').isString(),
+
+    // Validate dostepne as boolean
+    body('dostepne').isBoolean(),
+
+    // Validate skladniki as an optional array with at least one element
+    body('skladniki').optional().isArray({ min: 1 }),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const { nazwa, cena, img, dostepne, skladniki } = req.body;
 
-    // Prosta walidacja: sprawdź, czy wszystkie wymagane pola są dostępne
-    if (!nazwa || !cena || !img || dostepne === undefined) {
-        res.status(400).json({ error: "Missing required fields" });
-        return;
-    }
 
-    // Dodatkowa walidacja: sprawdź, czy cena jest liczbą
-    if (isNaN(cena)) {
-        res.status(400).json({ error: "Invalid price format" });
-        return;
-    }
-
-    // Pobierz maksymalne id z tabeli Pizza
     connection.query('SELECT MAX(id) AS maxId FROM Pizza', (maxIdErr, maxIdResult) => {
         if (maxIdErr) {
             console.error("Error getting max id:", maxIdErr);
@@ -337,10 +427,10 @@ app.post('/addPizza', (req, res) => {
             return;
         }
 
-        // Uzyskaj nowy id dla nowej pizzy (maksymalne id + 1)
+
         const newPizzaId = maxIdResult[0].maxId + 1;
 
-        // Wstaw nową pizzę
+
         const addPizzaQuery = `
             INSERT INTO Pizza (id, nazwa, cena, img, dostepne)
             VALUES (?, ?, ?, ?, ?)
@@ -359,7 +449,7 @@ app.post('/addPizza', (req, res) => {
 
                     const values = skladniki.map((skladnikId) => [skladnikId, newPizzaId]);
 
-                    // Dodaj składniki dla nowej pizzy
+
                     connection.query(addPizzaIngredientsQuery, [values], (addIngredientsErr) => {
                         if (addIngredientsErr) {
                             console.error("Error adding pizza ingredients:", addIngredientsErr);
@@ -375,10 +465,22 @@ app.post('/addPizza', (req, res) => {
         });
     });
 });
-app.delete('/deletePizza/:id', (req, res) => {
+
+app.delete('/deletePizza/:id',
+    [
+    // Validate pizzaId as integer
+    param('id').isInt(),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const pizzaId = req.params.id;
 
-    // Usuń składniki powiązane z pizzą
+
     const deletePizzaIngredientsQuery = `
         DELETE FROM PizzaSkladniki
         WHERE pizzaId = ?
@@ -389,7 +491,7 @@ app.delete('/deletePizza/:id', (req, res) => {
             console.error("Error deleting pizza ingredients:", deleteIngredientsErr);
             res.status(500).json({ error: "Internal Server Error" });
         } else {
-            // Usuń pizzę
+
             const deletePizzaQuery = `
                 DELETE FROM Pizza
                 WHERE id = ?
@@ -409,66 +511,93 @@ app.delete('/deletePizza/:id', (req, res) => {
 
 
 
-app.post("/register", (req,res) => {
+app.post("/register",
+    [
+    // Validate username as string
+    body('username').isString(),
+
+    // Validate password as string with a minimum length of 6 characters
+    body('password').isString().isLength({ min: 6 }),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const givenUsername = req.body.username;
     const givenPassword = req.body.password;
 
-
     bcrypt.hash(givenPassword, saltRounds, (err, hash) => {
-
         if (err) {
-            console.log(err);
+            console.error(err);
+            res.status(500).json({ error: "Internal Server Error" });
+            return;
         }
 
         connection.query(
             "INSERT INTO user (username, password, rola) VALUES (?,?, 'User')",
             [givenUsername, hash],
             (err, result) => {
-                console.log(err);
+                if (err) {
+                    console.error(err);
+                    res.status(500).json({ error: "Internal Server Error" });
+                    return;
+                }
+                res.status(200).json({ message: "User registered successfully" });
             }
-        )
+        );
     });
-
-
-
 });
 
+app.post("/login",
+    [
+    // Validate username as string
+    body('username').isString(),
 
-app.post("/login", (req, res) => {
+    // Validate password as string with a minimum length of 6 characters
+    body('password').isString()/*.isLength({ min: 6 })*/,
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const givenUsername = req.body.username;
     const givenPassword = req.body.password;
 
-
     connection.query(
         "SELECT * FROM user WHERE username = ?",
-        givenUsername,
+        [givenUsername],
         (err, result) => {
             if (err) {
-                res.send({err: err});
+                console.error(err);
+                res.status(500).json({ error: "Internal Server Error" });
+                return;
             }
 
-            if (result.length>0) {
+            if (result.length > 0) {
                 bcrypt.compare(givenPassword, result[0].password, (error, response) => {
-                    console.log(response);
                     if (response) {
                         req.session.user = result;
-
-                        console.log(req.session.user);
-                        res.send(result);
+                        res.status(200).json(result);
                     } else {
-
-                        res.send({message: "Wprowadzono zle dane"});
+                        res.status(401).json({ message: "Incorrect credentials" });
                     }
-                })
+                });
             } else {
-                res.send({message: "Nie znaleziono użytkownika"});
+                res.status(404).json({ message: "User not found" });
             }
         }
     );
 });
 
 
-app.get("/login", (req, res) => {
+app.get("/login",
+    (req, res) => {
     if (req.session.user) {
         res.send({ loggedIn: true, user: req.session.user });
     } else {
@@ -477,7 +606,18 @@ app.get("/login", (req, res) => {
 });
 
 
-app.put('/updateOrderStatus/:id', (req, res) => {
+app.put('/updateOrderStatus/:id',
+    [
+    // Validate orderId as integer
+    param('id').isInt(),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const orderId = req.params.id;
 
     const updateOrderStatusQuery = `
@@ -496,10 +636,22 @@ app.put('/updateOrderStatus/:id', (req, res) => {
     });
 });
 
-app.delete('/deleteOrder/:id', (req, res) => {
+
+app.delete('/deleteOrder/:id',
+    [
+    // Validate orderId as integer
+    param('id').isInt(),
+],
+    (req, res) => {
+    // Check for validation errors
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
     const orderId = req.params.id;
 
-    // First, delete ordered items associated with the order
+
     const deleteOrderedItemsQuery = `
         DELETE FROM ZamowionePrzedmioty
         WHERE orderId = ?
@@ -510,7 +662,8 @@ app.delete('/deleteOrder/:id', (req, res) => {
             console.error("Error deleting ordered items:", deleteItemsErr);
             res.status(500).json({ error: "Internal Server Error" });
         } else {
-            // After deleting ordered items, delete the order itself
+
+
             const deleteOrderQuery = `
                 DELETE FROM Zamowienie
                 WHERE id = ?

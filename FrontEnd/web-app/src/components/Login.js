@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import "../App.css";
-import {Link} from "react-router-dom";
+import React, { useState } from "react";
+import "../styles/styles.css";
+import { register, login } from '../services/API';
 
-export default function TEST() {
+export default function Login() {
     const [usernameReg, setUsernameReg] = useState("");
     const [passwordReg, setPasswordReg] = useState("");
 
@@ -11,39 +11,30 @@ export default function TEST() {
 
     const [loginStatus, setLoginStatus] = useState("");
 
-    const register = () => {
-        fetch("http://localhost:9951/register", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: usernameReg,
-                password: passwordReg,
-            }),
-        })
-            .then((response) => response.json())
+
+
+    const registerUser = () => {
+        const userData = {
+            username: usernameReg,
+            password: passwordReg,
+        };
+
+        register(userData)
             .then((data) => {
                 console.log(data);
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error("Error during registration:", error);
             });
     };
 
-    const login = () => {
-        fetch("http://localhost:9951/login", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            }),
-            credentials: 'include',
-        })
-            .then((response) => response.json())
+    const loginUser = () => {
+        const loginData = {
+            username: username,
+            password: password,
+        };
+
+        login(loginData)
             .then((data) => {
                 if (data.message) {
                     setLoginStatus(data.message);
@@ -51,17 +42,17 @@ export default function TEST() {
                     document.cookie = `role=${data[0].rola}+${data[0].id}; path=/`;
                     console.log(data[0].rola);
                     console.log(data[0].id);
-                    setLoginStatus(data[0].username);
+                    setLoginStatus('Zalogowano');
                 }
             })
             .catch((error) => {
-                console.error("Error:", error);
+                console.error("Error during login:", error);
             });
     };
 
     return (
         <div className="App">
-            <div className="registration">
+            <div className="registration-card">
                 <h1>Registration</h1>
                 <label>Username</label>
                 <input
@@ -72,15 +63,16 @@ export default function TEST() {
                 />
                 <label>Password</label>
                 <input
-                    type="text"
+                    type="password"
                     onChange={(e) => {
                         setPasswordReg(e.target.value);
                     }}
+
                 />
-                <button onClick={register}> Register </button>
+                <button onClick={registerUser}> Register </button>
             </div>
 
-            <div className="login">
+            <div className="login-card">
                 <h1>Login</h1>
                 <input
                     type="text"
@@ -96,11 +88,12 @@ export default function TEST() {
                         setPassword(e.target.value);
                     }}
                 />
-                    <button onClick={login}> Login</button>
-
+                <button onClick={loginUser}> Login</button>
             </div>
 
-            <h1>{loginStatus}</h1>
+            <div className={"status-card"}>
+                <h1>{loginStatus}</h1>
+            </div>
         </div>
     );
 }
